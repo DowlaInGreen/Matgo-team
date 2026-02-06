@@ -566,7 +566,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Email</div>
-                    <div className="text-gray-600">info@matgo-team.online</div>
+                    <div className="text-gray-600">matgoteam@gmail.com</div>
                   </div>
                 </div>
 
@@ -732,7 +732,7 @@ export default function Home() {
                 <a href={`tel:${phoneNumberRaw}`} className="hover:text-primary-light transition-colors">
                   {phoneNumber}
                 </a>
-                <span>info@matgo-team.online</span>
+                <span>matgoteam@gmail.com</span>
                 <a 
                   href={whatsappLink}
                   target="_blank"
