@@ -466,7 +466,7 @@ export default function Home() {
             </div>
             <h2 className="section-title">Zašto odabrati MAT-GO TEAM?</h2>
             <p className="section-subtitle">
-              Evo zašto nam klijenti vjeruju svoje domove i poslovne prostore.
+              Evo zašto nam klijenti povjeravaju svoje domove i poslovne prostore.
             </p>
           </div>
 
@@ -822,7 +822,7 @@ export default function Home() {
           {/* Copyright */}
           <div className="pt-8 flex justify-between items-center flex-wrap gap-4">
             <p className="text-white/40 text-sm">
-              © 2026 MAT-GO TEAM d.o.o. Sva prava pridržana.
+              © 2026 MAT-GO TEAM j.d.o.o. Sva prava pridržana.
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors">
