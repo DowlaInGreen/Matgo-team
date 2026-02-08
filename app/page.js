@@ -26,6 +26,11 @@ export default function Home() {
     poruka: ''
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [formLoading, setFormLoading] = useState(false)
+  const [formError, setFormError] = useState(false)
+
+  // Web3Forms API
+  const web3FormsKey = "a64a0c74-4a89-4e29-a633-77ce058952be"
 
   // Telefon i WhatsApp
   const phoneNumber = "+385 95 880 1755"
@@ -41,11 +46,42 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setFormSubmitted(true)
-    setTimeout(() => setFormSubmitted(false), 3000)
-    setFormData({ ime: '', email: '', telefon: '', poruka: '' })
+    setFormLoading(true)
+    setFormError(false)
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: web3FormsKey,
+          subject: `Nova poruka s web stranice - ${formData.ime}`,
+          from_name: "MAT-GO TEAM Website",
+          name: formData.ime,
+          email: formData.email,
+          phone: formData.telefon || 'Nije upisano',
+          message: formData.poruka,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setFormSubmitted(true)
+        setFormData({ ime: '', email: '', telefon: '', poruka: '' })
+        setTimeout(() => setFormSubmitted(false), 5000)
+      } else {
+        setFormError(true)
+      }
+    } catch (error) {
+      setFormError(true)
+    }
+
+    setFormLoading(false)
   }
 
   const navLinks = [
@@ -688,6 +724,12 @@ export default function Home() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
+                  {formError && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                      Došlo je do greške. Pokušajte ponovno ili nas kontaktirajte putem WhatsAppa.
+                    </div>
+                  )}
+
                   <div className="grid md:grid-cols-2 gap-5 mb-5">
                     <div>
                       <label className="block mb-2 font-medium text-gray-900">
@@ -699,6 +741,7 @@ export default function Home() {
                         value={formData.ime}
                         onChange={(e) => setFormData({...formData, ime: e.target.value})}
                         required
+                        disabled={formLoading}
                       />
                     </div>
                     <div>
@@ -711,6 +754,7 @@ export default function Home() {
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         required
+                        disabled={formLoading}
                       />
                     </div>
                   </div>
@@ -724,6 +768,7 @@ export default function Home() {
                       placeholder="+385 XX XXX XXXX"
                       value={formData.telefon}
                       onChange={(e) => setFormData({...formData, telefon: e.target.value})}
+                      disabled={formLoading}
                     />
                   </div>
 
@@ -736,12 +781,29 @@ export default function Home() {
                       value={formData.poruka}
                       onChange={(e) => setFormData({...formData, poruka: e.target.value})}
                       required
+                      disabled={formLoading}
                     />
                   </div>
 
-                  <button type="submit" className="btn-primary w-full justify-center">
-                    Pošalji upit
-                    <ArrowRight size={18} />
+                  <button 
+                    type="submit" 
+                    className="btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={formLoading}
+                  >
+                    {formLoading ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Šaljem...
+                      </>
+                    ) : (
+                      <>
+                        Pošalji upit
+                        <ArrowRight size={18} />
+                      </>
+                    )}
                   </button>
                 </form>
               )}
